@@ -12,7 +12,7 @@
 
 После парсинга вы должны получить структуру данных, описанную ниже  list[dict[str, int | str]]:
 [
-    {'id': 1, 'name': 'Ivan', 'last_name': 'Ivanov', 'age': 29, 'position': developer},
+    {'id': 1, 'name': 'Ivan', 'last_name': 'Ivanov', 'age': 29, 'position': developer, 'salary': Decimal('10000')},
     ...
 ]
 """
