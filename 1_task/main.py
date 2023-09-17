@@ -15,6 +15,8 @@
     {'id': 1, 'name': 'Ivan', 'last_name': 'Ivanov', 'age': 29, 'position': developer, 'salary': Decimal('10000')},
     ...
 ]
+
+для тестирования запустить pytest 1_task/test.py
 """
 
 import os
