@@ -6,7 +6,7 @@ import pytest
 from .self_chain import chain, Chain
 
 
-class TestGeneratorCycle:
+class TestGeneratorChain:
     @pytest.mark.parametrize(
         "iterable_objects",
         [
@@ -18,14 +18,11 @@ class TestGeneratorCycle:
         rc = real_chain(*iterable_objects)
         c = chain(*iterable_objects)
 
-        stop_idx = 100
         for idx, (rc_element, c_element) in enumerate(zip(rc, c)):
             assert rc_element == c_element
-            if idx == stop_idx:
-                break
 
 
-class TestClassCycle:
+class TestClassChain:
     @pytest.mark.parametrize(
         "iterable_objects",
         [
@@ -37,8 +34,5 @@ class TestClassCycle:
         rc = real_chain(*iterable_objects)
         c = Chain(*iterable_objects)
 
-        stop_idx = 100
         for idx, (rc_element, c_element) in enumerate(zip(rc, c)):
             assert rc_element == c_element
-            if idx == stop_idx:
-                break

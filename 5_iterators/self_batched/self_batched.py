@@ -1,9 +1,12 @@
-from itertools import cycle, batched, chain
+from typing import TypeVar, Iterable, Generator
 
-my_dict = {
-    "a": 1,
-    "b": 2,
-}
+T = TypeVar("T")
 
-for i in cycle(my_dict):
-    print(i)
+
+def batched(obj: Iterable[T], n: int) -> Generator[tuple[T], None, None]:
+    """Пиши свой код здесь."""
+
+
+class Batched:
+    def __init__(self, obj: Iterable[T], n: int):
+        """Реализуй этот класс."""
