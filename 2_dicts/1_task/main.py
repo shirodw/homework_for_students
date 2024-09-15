@@ -19,7 +19,7 @@ def get_employees_info() -> list[str]:
 
 def get_parsed_employees_info() -> list[dict[str, int | str]]:
     """Функция парсит данные, полученные из внешнего API и приводит их к стандартизированному виду."""
-    employees_info = get_employees_info()
+    _ = get_employees_info()
     parsed_employees_info = []
 
     # Ваш код ниже
