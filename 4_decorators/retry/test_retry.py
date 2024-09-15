@@ -23,7 +23,7 @@ class RetryStub:
 
 def test_function_with_incorrect_count_retry():
     stub = RetryStub()
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError):
         stub.execute = retry(0, timedelta(seconds=1))(stub.execute)
 
 
