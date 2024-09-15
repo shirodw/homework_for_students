@@ -77,7 +77,7 @@ def test_call_function_with_diff_attributes_without_error(args, kwargs):
 )
 def test_call_function_with_exception_on_set_call(count_errors):
     stub = RetryStub(count_unsuccessful_calls=count_errors)
-    stub.execute = retry(count_errors+1, timedelta(seconds=0.5))(stub.execute)
+    stub.execute = retry(count_errors+1, timedelta(milliseconds=500))(stub.execute)
     start = time.monotonic()
     result = stub.execute()
     result_time = time.monotonic() - start
