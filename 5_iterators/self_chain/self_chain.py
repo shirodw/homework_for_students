@@ -1,9 +1,12 @@
-from itertools import cycle, batched, chain
+from typing import TypeVar, Iterable, Generator
 
-my_dict = {
-    "a": 1,
-    "b": 2,
-}
+T = TypeVar("T")
 
-for i in cycle(my_dict):
-    print(i)
+
+def chain(*iterables: Iterable[T]) -> Generator[T, None, None]:
+    """Пишите ваш код здесь"""
+
+
+class Chain:
+    def __init__(self, *iterables: Iterable[T]):
+        """Реализуйте класс ниже"""
