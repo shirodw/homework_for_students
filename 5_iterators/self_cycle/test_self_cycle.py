@@ -1,9 +1,10 @@
-from itertools import cycle as real_cycle, zip_longest
+from itertools import cycle as real_cycle
+from itertools import zip_longest
 from typing import Iterable
 
 import pytest
 
-from .self_cycle import cycle, Cycle
+from .self_cycle import Cycle, cycle
 
 
 class TestGeneratorCycle:

@@ -1,4 +1,4 @@
-from typing import Iterable, Generator, TypeVar
+from typing import Generator, Iterable, TypeVar
 
 T = TypeVar("T")
 

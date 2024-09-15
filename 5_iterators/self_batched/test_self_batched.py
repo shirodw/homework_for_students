@@ -2,7 +2,7 @@ from itertools import batched as real_batched
 
 import pytest
 
-from .self_batched import batched, Batched
+from .self_batched import Batched, batched
 
 
 class TestGeneratorBatched:

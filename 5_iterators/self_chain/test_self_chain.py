@@ -3,7 +3,7 @@ from typing import Iterable
 
 import pytest
 
-from .self_chain import chain, Chain
+from .self_chain import Chain, chain
 
 
 class TestGeneratorChain:
