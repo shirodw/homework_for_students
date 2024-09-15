@@ -1,6 +1,5 @@
 import pytest
 
-
 from .decode import decode_numbers
 
 
