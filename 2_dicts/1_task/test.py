@@ -1,8 +1,7 @@
 from decimal import Decimal
 
-import pytest
-from pydantic import BaseModel, ValidationError
 from main import get_parsed_employees_info
+from pydantic import BaseModel, ValidationError
 
 
 class EmployeeInfo(BaseModel, extra='forbid'):

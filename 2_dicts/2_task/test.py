@@ -1,7 +1,5 @@
 import pytest
-
 from main import top_10_most_common_words
-
 
 TEXT_1 = """
 Ты жива еще, моя старушка?

@@ -1,5 +1,4 @@
 import pytest
-
 from main import get_max_number_of_words_from_sentences
 
 

@@ -1,5 +1,4 @@
 import pytest
-
 from main import is_sentence_is_pangram
 
 

@@ -20,8 +20,6 @@
 """
 
 import os
-from decimal import Decimal
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SPLIT_SYMBOL = '\n'

@@ -1,4 +1,4 @@
-from main import recover_article, get_correct_article
+from main import get_correct_article, recover_article
 
 
 def test_is_sentence_is_pangram():
