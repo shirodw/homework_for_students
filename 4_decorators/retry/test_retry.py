@@ -6,7 +6,7 @@ import pytest
 from .retry import retry
 
 
-class RetrySuccessStub:
+class RetryStub:
     def __init__(self, count_unsuccessful_calls: int = 0, raised_exception: Exception = Exception):
         self.total_calls = 0
         self._raised_exception = raised_exception
@@ -22,13 +22,13 @@ class RetrySuccessStub:
 
 
 def test_function_with_incorrect_count_retry():
-    stub = RetrySuccessStub()
+    stub = RetryStub()
     with pytest.raises(ValueError) as e:
         stub.execute = retry(0, timedelta(seconds=1))(stub.execute)
 
 
 def test_call_function_without_errors():
-    stub = RetrySuccessStub()
+    stub = RetryStub()
     stub.execute = retry(1, timedelta(seconds=1))(stub.execute)
     start = time.monotonic()
     result = stub.execute()
@@ -56,7 +56,7 @@ def test_call_function_without_errors():
     ]
 )
 def test_call_function_with_diff_attributes_without_error(args, kwargs):
-    stub = RetrySuccessStub()
+    stub = RetryStub()
     stub.execute = retry(1, timedelta(seconds=1))(stub.execute)
     start = time.monotonic()
     result = stub.execute(*args, **kwargs)
@@ -76,7 +76,7 @@ def test_call_function_with_diff_attributes_without_error(args, kwargs):
     ]
 )
 def test_call_function_with_exception_on_set_call(count_errors):
-    stub = RetrySuccessStub(count_unsuccessful_calls=count_errors)
+    stub = RetryStub(count_unsuccessful_calls=count_errors)
     stub.execute = retry(count_errors+1, timedelta(seconds=0.5))(stub.execute)
     start = time.monotonic()
     result = stub.execute()
@@ -97,7 +97,7 @@ def test_call_function_with_exception_on_set_call(count_errors):
     ]
 )
 def test_call_function_with_exception_after_all_try(count_errors):
-    stub = RetrySuccessStub(count_unsuccessful_calls=count_errors)
+    stub = RetryStub(count_unsuccessful_calls=count_errors)
     stub.execute = retry(count_errors, timedelta(milliseconds=500))(stub.execute)
     start = time.monotonic()
     with pytest.raises(Exception):
@@ -109,7 +109,7 @@ def test_call_function_with_exception_after_all_try(count_errors):
 
 
 def test_handle_preset_exceptions():
-    stub = RetrySuccessStub(count_unsuccessful_calls=1, raised_exception=AttributeError())
+    stub = RetryStub(count_unsuccessful_calls=1, raised_exception=AttributeError())
     stub.execute = retry(2, timedelta(milliseconds=500), handled_exceptions=(ValueError,))(stub.execute)
     start = time.monotonic()
     with pytest.raises(AttributeError):
