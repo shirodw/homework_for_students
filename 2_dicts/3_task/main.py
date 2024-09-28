@@ -1,4 +1,4 @@
-def format_phone(phone_number: str) -> dict[str, int]:
+def format_phone(phone_number: str) -> str:
     """Функция возвращает отформатированный телефон.
 
     Args:

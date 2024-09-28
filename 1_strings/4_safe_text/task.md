@@ -22,5 +22,5 @@
 
 Проверка результата:
 ```bash
-pytest ./4_safe_text/text.py
+pytest ./4_safe_text/test.py
 ```
