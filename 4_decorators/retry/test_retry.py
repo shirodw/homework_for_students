@@ -83,7 +83,7 @@ def test_call_function_with_exception_on_set_call(count_errors):
     result_time = time.monotonic() - start
     expected_time = timedelta(milliseconds=500).total_seconds() * count_errors
     assert result is True
-    assert expected_time < result_time
+    assert result_time >= expected_time
     assert stub.total_calls == count_errors + 1
 
 
