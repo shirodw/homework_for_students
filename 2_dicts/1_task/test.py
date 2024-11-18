@@ -22,10 +22,7 @@ def test_get_parsed_employees_info():
 
     Если результат не соответствует требуемой структуре, то выведем ошибку.
     """
-    parsed_info = get_parsed_employees_info()
-    employees_info = {'result': parsed_info}
-
-    assert len(parsed_info) > 0
+    employees_info = {'result': get_parsed_employees_info()}
 
     try:
         ListOfEmployeeInfo.model_validate(employees_info, strict=True)

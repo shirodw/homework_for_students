@@ -19,7 +19,18 @@ def get_wrong_article() -> str:
 
 
 def recover_article() -> str:
-    wrong_article = get_wrong_article()
 
-    # Ваш код ниже, возвращайте уже отредактированный текст!
+    wrong_article = get_wrong_article()
+    sentences = wrong_article.split(SPLIT_SYMBOL)
+    recovered_sentences = []
+    for sentence in sentences:
+        while sentence and sentence[-1] == '!':
+            sentence = sentence[:-1]
+        cleaned_sentence = sentence.lower()[::-1]
+        cleaned_sentence = cleaned_sentence.replace('woof-woof', 'cat')
+        if cleaned_sentence:
+            cleaned_sentence = cleaned_sentence[0].upper() + cleaned_sentence[1:]
+        recovered_sentences.append(cleaned_sentence)
+    wrong_article = SPLIT_SYMBOL.join(recovered_sentences)
+
     return wrong_article
