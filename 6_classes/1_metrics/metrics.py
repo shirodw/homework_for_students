@@ -1,86 +1,88 @@
+import csv
 import os
 from datetime import datetime, timezone
-from typing import List, Tuple
+from typing import Protocol
+
+
+class Storage(Protocol):
+    def write(self, metrics: list[tuple[str, str, int]]):
+        pass
+
+
+class TxtStorage:
+    def __init__(self, path: str):
+        self.path = path
+        self._ensure_file_exists()
+
+    def _ensure_file_exists(self):
+        if not os.path.exists(self.path):
+            with open(self.path, "w") as _:
+                pass
+
+    def write(self, metrics: list[tuple[str, str, int]]):
+        with open(self.path, "a") as file:
+            for metric in metrics:
+                file.write(f"{metric[0]} {metric[1]} {metric[2]}\n")
+
+
+class CsvStorage:
+    def __init__(self, path: str):
+        self.path = path
+        self._ensure_file_exists()
+
+    def _ensure_file_exists(self):
+        if not os.path.exists(self.path):
+            with open(self.path, "w") as _:
+                pass
+
+    def write(self, metrics: list[tuple[str, str, int]]):
+        with open(self.path, "a", newline="") as file:
+            writer = csv.writer(file, delimiter=";")
+            if os.path.getsize(self.path) == 0:
+                writer.writerow(["date", "metric", "value"])
+            for metric in metrics:
+                writer.writerow(metric)
 
 
 class Statsd:
-    def __init__(self, path: str, buffer_limit: int = 10):
-        self.path = path
-        self.buffer_limit = buffer_limit
-        self.buffer: List[Tuple[str, str, int]] = []
-        self._initialize_writer()
+    def __init__(self, storage: Storage, buffer_size: int = 10):
+        self.storage = storage
+        self.buffer_size = buffer_size
+        self.buffer = []
 
-    def _initialize_writer(self):
-        if self.path.endswith(".txt"):
-            self.write_metrics = self._write_txt_metrics
-        elif self.path.endswith(".csv"):
-            self.write_metrics = self._write_csv_metrics
-        else:
-            raise ValueError()
+    def incr(self, metric_name: str):
+        self._add_metric(metric_name, 1)
 
-    def incr(self, name: str):
-        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
-        self._add_metric(timestamp, name, 1)
+    def decr(self, metric_name: str):
+        self._add_metric(metric_name, -1)
 
-    def decr(self, name: str):
-        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
-        self._add_metric(timestamp, name, -1)
+    def _add_metric(self, metric_name: str, value: int):
+        now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")
+        self.buffer.append((now, metric_name, value))
+        if len(self.buffer) >= self.buffer_size:
+            self._evacuate()
 
-    def _add_metric(self, timestamp: str, name: str, value: int):
-        self.buffer.append((timestamp, name, value))
-        if len(self.buffer) >= self.buffer_limit:
-            self.flush()
-
-    def flush(self):
+    def _evacuate(self):
         if self.buffer:
-            try:
-                self.write_metrics(self.buffer)
-                self.buffer.clear()
-                with open(self.path, 'r') as file:
-                    lines = [line for line in file if line.strip()]
-                with open(self.path, 'w') as file:
-                    file.writelines(lines)
-            except Exception:
-                pass
+            self.storage.write(self.buffer)
+            self.buffer = []
 
     def __enter__(self):
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        if self.buffer:
-            self.flush()
-
-    def _write_txt_metrics(self, metrics: List[Tuple[str, str, int]]):
-        with open(self.path, "a") as file:
-            for metric in metrics:
-                line = f"{metric[0]} {metric[1]} {metric[2]}\n"
-                file.write(line)
-
-    def _write_csv_metrics(self, metrics: List[Tuple[str, str, int]]):
-        file_exists = os.path.exists(self.path)
-        with open(self.path, "a", newline="") as file:
-            if not file_exists or os.stat(self.path).st_size == 0:
-                header = "date;metric;value\n"
-                file.write(header)
-            for metric in metrics:
-                line = f"{metric[0]};{metric[1]};{metric[2]}\n"
-                file.write(line)
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._evacuate()
 
 
-
-def get_txt_statsd(path: str, buffer_limit: int = 10) -> Statsd:
-    """Реализуйте инициализацию метрик для текстового файла"""
-    if not os.path.exists(path):
-        with open(path, "w") as file:
-            pass
-    return Statsd(path, buffer_limit)
+def get_txt_statsd(path: str, buffer: int = 10) -> Statsd:
+    if not path.endswith(".txt"):
+        raise ValueError()
+    storage = TxtStorage(path)
+    return Statsd(storage, buffer)
 
 
-def get_csv_statsd(path: str, buffer_limit: int = 10) -> Statsd:
-    """Реализуйте инициализацию метрик для csv файла"""
-    if not os.path.exists(path):
-        with open(path, "w", newline="") as file:
-            header = "date;metric;value\n"
-            file.write(header)
-    return Statsd(path, buffer_limit)
-
+def get_csv_statsd(path: str, buffer: int = 10) -> Statsd:
+    if not path.endswith(".csv"):
+        raise ValueError()
+    storage = CsvStorage(path)
+    return Statsd(storage, buffer)
